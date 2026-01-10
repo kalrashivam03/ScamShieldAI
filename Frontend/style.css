@@ -1,0 +1,175 @@
+/* =======================
+   GLOBAL RESET & BASE
+======================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(
+        180deg,
+        #e3f2fd 0%,
+        #f5f9ff 100%
+    );
+}
+
+/* =======================
+   NAVIGATION BAR
+======================= */
+
+#navbar {
+    display: flex;
+    align-items: center;
+    height: 90px;
+    padding: 16px 24px;
+    background-color: #0d47a1; /* deep navy */
+    color: #ffffff;
+}
+
+#nav-left {
+    display: flex;
+    align-items: center;
+}
+
+/* Logo */
+#nav-logo img {
+    height: 85px;
+    width: 85px;
+    margin-top: 14px;
+    object-fit: contain;
+
+    filter:
+        brightness(1.15)
+        contrast(1.25)
+        saturate(1.3)
+        drop-shadow(0 0 6px rgba(79, 195, 247, 0.6));
+}
+
+/* App Name */
+#app-name {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #90caf9;
+}
+
+/* Right Nav */
+#nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* NAV BUTTONS */
+#nav-signin,
+#nav-signup,
+#nav-about {
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #1976d2;
+
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* Hover */
+#nav-signin:hover,
+#nav-signup:hover,
+#nav-about:hover {
+    background-color: #4fc3f7;
+    color: #0d47a1;
+    transform: scale(1.05);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+/* Active */
+#nav-signin:active,
+#nav-signup:active,
+#nav-about:active {
+    transform: scale(0.96);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* =======================
+   HOME / HERO SECTION
+======================= */
+
+#home-content {
+    min-height: calc(100vh - 90px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    padding: 40px 20px;
+
+    background: radial-gradient(
+        circle at top,
+        #1565c0,
+        #0b3c91
+    );
+}
+
+/* Hero Title */
+#home-content h1 {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    color: #e3f2fd;
+}
+
+/* Hero Paragraph */
+#home-content p {
+    max-width: 800px;
+    font-size: 18px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+    color: #bbdefb;
+}
+
+/* GET STARTED BUTTON */
+
+#get-started-button {
+    display: inline-block;
+    padding: 12px 32px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+
+    color: #0d47a1;
+    background-color: #4fc3f7;
+
+    box-shadow: 0 8px 20px rgba(79, 195, 247, 0.45);
+    transition:
+        background-color 0.3s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* Hover */
+#get-started-button:hover {
+    background-color: #81d4fa;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(79, 195, 247, 0.6);
+}
+
+/* Active */
+#get-started-button:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 6px 14px rgba(79, 195, 247, 0.4);
+}
+
