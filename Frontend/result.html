@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScamShield AI | Result</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="navbar">
+        <div id="nav-left">
+            <button id="back-button">Back</button>
+            <div id="nav-logo">
+                <img src="Logo.png.png" alt="ScamShieldAI Logo">
+            </div>
+            <h2 id="app-name">ScamShield AI</h2>
+        </div>
+        <div id="nav-right">
+            <a href="signin.html" id="nav-signin">Sign In</a>
+            <a href="signup.html" id="nav-signup">Sign Up</a>
+            <a href="about.html" id="nav-about">About Us</a>
+        </div>
+    </div>
+
+
+    <div id="result-page">
+    <section id="page-header">
+        <h1>Message Analysis Result</h1>
+        <p>Here’s what our AI found after analyzing your message</p>
+    </section>
+    <section id="status-banner-high-risk">
+        <h2>🚨 Scam Detected</h2>
+        <p>Risk Score: <strong>82%</strong> (High Risk)</p>
+    </section>
+    <section id="explanation-card">
+        <h3>Why we flagged this message</h3>
+        <ul>
+            <li>Urgent or threatening language detected</li>
+            <li>Suspicious external link found</li>
+            <li>Possible impersonation attempt</li>
+        </ul>
+    </section>
+    <section id="message-card">
+        <h3>Analyzed Content</h3>
+        <div id="message-box">
+            <p>
+                "Your bank account will be blocked today.
+                Click the link below to verify immediately."
+            </p>
+        </div>
+    </section>
+    <section id="indicators-card">
+        <h3>Threat Indicators</h3>
+        <div id="indicator-list">
+            <span id="indicator-link">🔗 Suspicious Link</span>
+            <span id="indicator-urgency">🚨 Urgency</span>
+            <span id="indicator-impersonation">🎭 Impersonation</span>
+        </div>
+    </section>
+    <section id="advice-card">
+        <h3>What you should do now</h3>
+        <ul>
+            <li>Do not click on any links</li>
+            <li>Do not reply to the sender</li>
+            <li>Block and report the message</li>
+        </ul>
+    </section>
+    <section id="actions">
+        <button id="primary-btn">Report & Help Others</button>
+        <button id="secondary-btn">Analyze Another Message</button>
+    </section>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
