@@ -201,7 +201,7 @@ body {
     color: #e3f2fd;
 }
 
-#submit-form {
+#scamForm {
     background-color: #ffffff;
     padding: 32px;
     border-radius: 12px;
@@ -211,14 +211,14 @@ body {
     height: 350px;
 }
 
-#submit-form label {
+#scamForm label {
     display: block;
     font-size: 20px;
     margin-bottom: 10px;
     color: #000000;
 }
 
-#submit-form textarea {
+#scamForm textarea {
     width: 100%;
     height: 150px;
     padding: 12px;
@@ -229,7 +229,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#submit-form button {
+#scamForm button {
     margin-top: 20px;
     padding: 12px 24px;
     font-size: 18px;
@@ -245,14 +245,14 @@ body {
         box-shadow 0.2s ease;
 }
 
-#submit-form button:hover {
+#scamForm button:hover {
     background-color: #4fc3f7;
     transform: scale(1.05);
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
     color: #000000;
 }
 
-#submit-form button:active {
+#scamForm button:active {
     transform: scale(0.96);
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
 }
@@ -284,21 +284,34 @@ body {
     color: #555;
 }
 
-#status-banner-high-risk {
-    background-color: #ffe5e5;
-    color: #b00020;
+#status-banner {
     padding: 22px;
     border-radius: 12px;
     text-align: center;
     margin-bottom: 30px;
 }
 
-#status-banner-high-risk h2 {
+#status-banner.safe {
+    background-color: #2e7d32; /* light green */
+    color: #2e7d32; /* dark green */
+}
+
+#status-banner.suspicious {
+    background-color: #f9a825; /* light yellow */
+    color: #f9a825; /* dark yellow */
+}
+
+#status-banner.scam {
+    background-color: #c62828; /* light red */
+    color: #c62828; /* dark red */
+}
+
+#status-banner h2 {
     font-size: 26px;
     margin-bottom: 6px;
 }
 
-#status-banner-high-risk p {
+#status-banner p {
     font-size: 16px;
 }
 

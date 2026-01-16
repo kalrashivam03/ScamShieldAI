@@ -1,120 +1,188 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* ===============================
-       BACK BUTTON HANDLING
-    =============================== */
-    const backButton = document.getElementById("back-button");
-    if (backButton) {
-        backButton.addEventListener("click", () => {
-            window.history.back();
-        });
-    }
+  /* ===============================
+     BACK BUTTON
+  =============================== */
+  const backButton = document.getElementById("back-button");
+  if (backButton) {
+    backButton.addEventListener("click", () => window.history.back());
+  }
 
-    /* ===============================
-       SIGN IN & SIGN UP HANDLING
-    =============================== */
-    const authForm = document.getElementById("submit-form");
-    const emailInput = document.getElementById("email-input");
-    const passwordInput = document.getElementById("password-input");
-    const confirmPasswordInput = document.getElementById("confirm-password-input");
+  /* ===============================
+     AUTH (SIGN IN / SIGN UP)
+  =============================== */
+  const authForm = document.getElementById("submit-form");
+  const emailInput = document.getElementById("email-input");
+  const passwordInput = document.getElementById("password-input");
+  const confirmPasswordInput = document.getElementById("confirm-password-input");
 
-    if (authForm && emailInput && passwordInput) {
-        authForm.addEventListener("submit", (e) => {
-            e.preventDefault();
+  if (authForm && emailInput && passwordInput && !document.getElementById("message-input")) {
+    authForm.addEventListener("submit", (e) => {
+      e.preventDefault();
 
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
 
-            if (!email || !password) {
-                alert("Please fill in all required fields.");
-                return;
-            }
+      if (!email || !password) {
+        alert("Please fill in all required fields.");
+        return;
+      }
 
-            // SIGN UP PAGE
-            if (confirmPasswordInput) {
-                const confirmPassword = confirmPasswordInput.value.trim();
-
-                if (password !== confirmPassword) {
-                    alert("Passwords do not match.");
-                    return;
-                }
-
-                localStorage.setItem("scamshield_user", email);
-                alert("Account created successfully!");
-                window.location.href = "signin.html";
-            }
-            // SIGN IN PAGE
-            else {
-                localStorage.setItem("scamshield_user", email);
-                alert("Signed in successfully!");
-                window.location.href = "Home.html";
-            }
-        });
-    }
-
-    /* ===============================
-       SUBMIT MESSAGE FOR ANALYSIS
-    =============================== */
-    const messageInput = document.getElementById("message-input");
-
-    if (authForm && messageInput) {
-        authForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-
-            const message = messageInput.value.trim();
-
-            if (!message) {
-                alert("Please enter a message to analyze.");
-                return;
-            }
-
-            // Save message for result page
-            localStorage.setItem("scamshield_message", message);
-
-            // Fake risk score for demo (AI placeholder)
-            const riskScore = Math.floor(Math.random() * 40) + 60; // 60–99%
-            localStorage.setItem("scamshield_risk", riskScore);
-
-            window.location.href = "result.html";
-        });
-    }
-
-    /* ===============================
-       RESULT PAGE LOGIC
-    =============================== */
-    const messageBox = document.getElementById("message-box");
-    const riskBanner = document.getElementById("status-banner-high-risk");
-
-    if (messageBox && riskBanner) {
-        const storedMessage = localStorage.getItem("scamshield_message");
-        const riskScore = localStorage.getItem("scamshield_risk");
-
-        if (storedMessage) {
-            messageBox.innerHTML = `<p>"${storedMessage}"</p>`;
+      if (confirmPasswordInput) {
+        if (password !== confirmPasswordInput.value.trim()) {
+          alert("Passwords do not match.");
+          return;
         }
+        alert("Account created successfully!");
+        window.location.href = "signin.html";
+      } else {
+        alert("Signed in successfully!");
+        window.location.href = "Home.html";
+      }
+    });
+  }
 
-        if (riskScore) {
-            riskBanner.querySelector("p").innerHTML =
-                `Risk Score: <strong>${riskScore}%</strong> (High Risk)`;
-        }
-    }
+  /* ===============================
+     MESSAGE ANALYSIS (BACKEND)
+  =============================== */
+  const analyzeForm = document.getElementById("scamForm");
+  const messageInput = document.getElementById("messageInput");
+  const resultDiv = document.getElementById("result");
 
-    /* ===============================
-       RESULT PAGE ACTION BUTTONS
-    =============================== */
-    const analyzeAgainBtn = document.getElementById("secondary-btn");
-    const reportBtn = document.getElementById("primary-btn");
+  if (analyzeForm && messageInput) {
+    analyzeForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    if (analyzeAgainBtn) {
-        analyzeAgainBtn.addEventListener("click", () => {
-            window.location.href = "submit.html";
+      const message = messageInput.value.trim();
+      if (!message) {
+        alert("Please enter a message.");
+        return;
+      }
+
+      if (resultDiv) resultDiv.innerText = "Analyzing...";
+
+      try {
+        const response = await fetch("http://localhost:5000/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
         });
-    }
 
-    if (reportBtn) {
-        reportBtn.addEventListener("click", () => {
-            alert("Thank you for reporting! This helps protect others.");
-        });
-    }
+        const data = await response.json();
+        if (!data.success) throw new Error("Analysis failed");
+
+        // Save backend response for result page
+        localStorage.setItem("analysisResult", JSON.stringify({
+          message,
+          verdict: data.verdict,
+          riskScore: data.riskScore,
+          indicators: data.indicators
+        }));
+
+        window.location.href = "result.html";
+
+      } catch (err) {
+        console.error(err);
+        alert("Unable to analyze message. Please try again.");
+      }
+    });
+  }
+
+  /* ===============================
+     RESULT PAGE RENDERING
+  =============================== */
+const verdictText = document.getElementById("verdict-text");
+const riskScoreEl = document.getElementById("risk-score");
+const reasonList = document.getElementById("reason-list");
+const indicatorList = document.getElementById("indicator-list");
+const analyzedMessage = document.getElementById("analyzed-message");
+const statusBanner = document.getElementById("status-banner");
+
+const storedResult = localStorage.getItem("analysisResult");
+
+if (!storedResult) {
+  console.warn("No analysis result found");
+  return;
+}
+
+const { message, verdict, riskScore, indicators } = JSON.parse(storedResult);
+
+// ✅ SAFETY: normalize indicators
+const safeIndicators = Array.isArray(indicators) ? indicators : [];
+
+// Message
+analyzedMessage.innerText = `"${message}"`;
+
+// Reset banner state
+statusBanner.classList.remove(
+  "status-safe",
+  "status-medium-risk",
+  "status-high-risk"
+);
+
+// Clear lists
+reasonList.innerHTML = "";
+indicatorList.innerHTML = "";
+
+// ================= SAFE =================
+if (verdict === "Safe") {
+  verdictText.innerText = "✅ Message Appears Safe";
+  riskScoreEl.innerText = "0% (Low Risk)";
+  statusBanner.classList.add("status-safe");
+
+  reasonList.innerHTML = "<li>No threat indicators were detected.</li>";
+  indicatorList.innerHTML = "<span>✔ No indicators</span>";
+}
+
+// ================= SUSPICIOUS =================
+else if (verdict === "Suspicious") {
+  verdictText.innerText = "⚠️ Suspicious Message";
+  riskScoreEl.innerText = `${riskScore}% (Medium Risk)`;
+  statusBanner.classList.add("status-medium-risk");
+
+  if (safeIndicators.length === 0) {
+    reasonList.innerHTML = "<li>Minor risk patterns detected.</li>";
+  } else {
+    safeIndicators.forEach(ind => {
+      reasonList.innerHTML += `<li>${ind} detected</li>`;
+      indicatorList.innerHTML += `<span>⚠️ ${ind}</span>`;
+    });
+  }
+}
+
+// ================= SCAM =================
+else {
+  verdictText.innerText = "🚨 Scam Detected";
+  riskScoreEl.innerText = `${riskScore}% (High Risk)`;
+  statusBanner.classList.add("status-high-risk");
+
+  if (safeIndicators.length === 0) {
+    reasonList.innerHTML = "<li>Multiple high-risk patterns detected.</li>";
+  } else {
+    safeIndicators.forEach(ind => {
+      reasonList.innerHTML += `<li>${ind} detected</li>`;
+      indicatorList.innerHTML += `<span>🚨 ${ind}</span>`;
+    });
+  }
+}
+
+
+  /* ===============================
+     RESULT ACTIONS
+  =============================== */
+  const analyzeAgainBtn = document.getElementById("secondary-btn");
+  const reportBtn = document.getElementById("primary-btn");
+
+  if (analyzeAgainBtn) {
+    analyzeAgainBtn.addEventListener("click", () => {
+      window.location.href = "submit.html";
+    });
+  }
+
+  if (reportBtn) {
+    reportBtn.addEventListener("click", () => {
+      alert("Thank you for reporting. This helps protect others.");
+    });
+  }
 
 });

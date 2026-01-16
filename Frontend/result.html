@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScamShield AI | Result</title>
+    <title>ScamShield AI | Analysis Result</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,54 +22,68 @@
         </div>
     </div>
 
-
+    
     <div id="result-page">
-    <section id="page-header">
-        <h1>Message Analysis Result</h1>
-        <p>Here’s what our AI found after analyzing your message</p>
-    </section>
-    <section id="status-banner-high-risk">
-        <h2>🚨 Scam Detected</h2>
-        <p>Risk Score: <strong>82%</strong> (High Risk)</p>
-    </section>
-    <section id="explanation-card">
-        <h3>Why we flagged this message</h3>
-        <ul>
-            <li>Urgent or threatening language detected</li>
-            <li>Suspicious external link found</li>
-            <li>Possible impersonation attempt</li>
-        </ul>
-    </section>
-    <section id="message-card">
-        <h3>Analyzed Content</h3>
-        <div id="message-box">
+        <!-- Header -->
+        <section id="page-header">
+            <h1>Message Analysis Result</h1>
             <p>
-                "Your bank account will be blocked today.
-                Click the link below to verify immediately."
+                Below is the outcome of our AI-driven analysis based on detected patterns
+                and risk indicators.
             </p>
-        </div>
-    </section>
-    <section id="indicators-card">
-        <h3>Threat Indicators</h3>
-        <div id="indicator-list">
-            <span id="indicator-link">🔗 Suspicious Link</span>
-            <span id="indicator-urgency">🚨 Urgency</span>
-            <span id="indicator-impersonation">🎭 Impersonation</span>
-        </div>
-    </section>
-    <section id="advice-card">
-        <h3>What you should do now</h3>
-        <ul>
-            <li>Do not click on any links</li>
-            <li>Do not reply to the sender</li>
-            <li>Block and report the message</li>
-        </ul>
-    </section>
-    <section id="actions">
-        <button id="primary-btn">Report & Help Others</button>
-        <button id="secondary-btn">Analyze Another Message</button>
-    </section>
+        </section>
+
+        <!-- Verdict -->
+        <section id="status-banner">
+            <h2 id="verdict-text"></h2>
+            <p>
+                Overall Risk Assessment:
+                <strong id="risk-score"></strong>
+            </p>
+        </section>
+
+        <!-- Explanation -->
+        <section id="explanation-card">
+            <h3>Analysis Summary</h3>
+            <ul id="reason-list">
+                <!-- Dynamically injected -->
+            </ul>
+        </section>
+
+        <!-- Message -->
+        <section id="message-card">
+            <h3>Analyzed Message Content</h3>
+            <div id="message-box">
+                <p id="analyzed-message"></p>
+            </div>
+        </section>
+
+        <!-- Indicators -->
+        <section id="indicators-card">
+            <h3>Detected Indicators</h3>
+            <div id="indicator-list">
+                <!-- Dynamically injected -->
+            </div>
+        </section>
+
+        <!-- Advice -->
+        <section id="advice-card">
+            <h3>Recommended Next Steps</h3>
+            <ul id="advice-list">
+                <li>Review the message carefully before taking any action</li>
+                <li>Avoid sharing sensitive or personal information</li>
+                <li>When in doubt, verify the sender through official channels</li>
+            </ul>
+        </section>
+
+        <!-- Actions -->
+        <section id="actions">
+            <button id="primary-btn">Report This Message</button>
+            <button id="secondary-btn">Analyze Another Message</button>
+        </section>
+
     </div>
+
     <script src="main.js"></script>
 </body>
 </html>
