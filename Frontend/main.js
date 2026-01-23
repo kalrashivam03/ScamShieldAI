@@ -1,22 +1,43 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ===============================
+     UTILS
+  =============================== */
+
+  const $ = (id) => document.getElementById(id);
+
+  const getStoredResult = () => {
+    try {
+      return JSON.parse(localStorage.getItem("analysisResult"));
+    } catch {
+      return null;
+    }
+  };
+
+  const normalizeVerdict = (verdict) => {
+    if (!verdict) return "safe";
+    return String(verdict).toLowerCase();
+  };
+
+  /* ===============================
      BACK BUTTON
   =============================== */
-  const backButton = document.getElementById("back-button");
-  if (backButton) {
-    backButton.addEventListener("click", () => window.history.back());
+
+  const backBtn = $("back-button");
+  if (backBtn) {
+    backBtn.addEventListener("click", () => window.history.back());
   }
 
   /* ===============================
      AUTH (SIGN IN / SIGN UP)
   =============================== */
-  const authForm = document.getElementById("submit-form");
-  const emailInput = document.getElementById("email-input");
-  const passwordInput = document.getElementById("password-input");
-  const confirmPasswordInput = document.getElementById("confirm-password-input");
 
-  if (authForm && emailInput && passwordInput && !document.getElementById("message-input")) {
+  const authForm = $("signin-form") || $("signup-form");
+  const emailInput = $("email-input");
+  const passwordInput = $("password-input");
+  const confirmPasswordInput = $("confirm-password-input");
+
+  if (authForm && emailInput && passwordInput && !$("messageInput")) {
     authForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
@@ -43,14 +64,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ===============================
-     MESSAGE ANALYSIS (BACKEND)
+     MESSAGE ANALYSIS (SUBMIT PAGE)
   =============================== */
-  const analyzeForm = document.getElementById("scamForm");
-  const messageInput = document.getElementById("messageInput");
-  const resultDiv = document.getElementById("result");
 
-  if (analyzeForm && messageInput) {
-    analyzeForm.addEventListener("submit", async (e) => {
+  const scamForm = $("scamForm");
+  const messageInput = $("messageInput");
+
+  if (scamForm && messageInput) {
+    scamForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const message = messageInput.value.trim();
@@ -59,8 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (resultDiv) resultDiv.innerText = "Analyzing...";
-
+      
       try {
         const response = await fetch("http://localhost:5000/api/analyze", {
           method: "POST",
@@ -71,12 +91,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await response.json();
         if (!data.success) throw new Error("Analysis failed");
 
-        // Save backend response for result page
+        // 🔒 Always overwrite old result
+        localStorage.removeItem("analysisResult");
+
         localStorage.setItem("analysisResult", JSON.stringify({
           message,
           verdict: data.verdict,
-          riskScore: data.riskScore,
-          indicators: data.indicators
+          riskScore: Number(data.riskScore) || 0,
+          indicators: Array.isArray(data.indicators) ? data.indicators : []
         }));
 
         window.location.href = "result.html";
@@ -91,87 +113,69 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ===============================
      RESULT PAGE RENDERING
   =============================== */
-const verdictText = document.getElementById("verdict-text");
-const riskScoreEl = document.getElementById("risk-score");
-const reasonList = document.getElementById("reason-list");
-const indicatorList = document.getElementById("indicator-list");
-const analyzedMessage = document.getElementById("analyzed-message");
-const statusBanner = document.getElementById("status-banner");
 
-const storedResult = localStorage.getItem("analysisResult");
+  const verdictText = $("verdict-text");
+  const riskScoreEl = $("risk-score");
+  const reasonList = $("reason-list");
+  const indicatorList = $("indicator-list");
+  const analyzedMessage = $("analyzed-message");
+  const statusBanner = $("status-banner");
 
-if (!storedResult) {
-  console.warn("No analysis result found");
-  return;
-}
+  if (verdictText && statusBanner) {
 
-const { message, verdict, riskScore, indicators } = JSON.parse(storedResult);
+    const result = getStoredResult();
+    if (!result) {
+      verdictText.innerText = "No analysis result found.";
+      return;
+    }
 
-// ✅ SAFETY: normalize indicators
-const safeIndicators = Array.isArray(indicators) ? indicators : [];
+    const verdict = normalizeVerdict(result.verdict);
+    const riskScore = Number(result.riskScore) || 0;
+    const indicators = result.indicators || [];
 
-// Message
-analyzedMessage.innerText = `"${message}"`;
+    // Reset UI
+    statusBanner.className = "";
+    reasonList.innerHTML = "";
+    indicatorList.innerHTML = "";
 
-// Reset banner state
-statusBanner.classList.remove(
-  "status-safe",
-  "status-medium-risk",
-  "status-high-risk"
-);
+    analyzedMessage.innerText = `"${result.message}"`;
 
-// Clear lists
-reasonList.innerHTML = "";
-indicatorList.innerHTML = "";
+    if (verdict.includes("safe")) {
+      verdictText.innerText = "✅ Message Appears Safe";
+      riskScoreEl.innerText = "0% (Low Risk)";
+      statusBanner.classList.add("status-safe");
 
-// ================= SAFE =================
-if (verdict === "Safe") {
-  verdictText.innerText = "✅ Message Appears Safe";
-  riskScoreEl.innerText = "0% (Low Risk)";
-  statusBanner.classList.add("status-safe");
+      reasonList.innerHTML = "<li>No threat indicators were detected.</li>";
+      indicatorList.innerHTML = "<span>✔ No indicators</span>";
+    }
+    else if (verdict.includes("suspicious")) {
+      verdictText.innerText = "⚠️ Suspicious Message";
+      riskScoreEl.innerText = `${riskScore}% (Medium Risk)`;
+      statusBanner.classList.add("status-medium-risk");
 
-  reasonList.innerHTML = "<li>No threat indicators were detected.</li>";
-  indicatorList.innerHTML = "<span>✔ No indicators</span>";
-}
+      indicators.forEach(ind => {
+        reasonList.innerHTML += `<li>${ind} detected</li>`;
+        indicatorList.innerHTML += `<span>⚠️ ${ind}</span>`;
+      });
+    }
+    else {
+      verdictText.innerText = "🚨 Scam Detected";
+      riskScoreEl.innerText = `${riskScore}% (High Risk)`;
+      statusBanner.classList.add("status-high-risk");
 
-// ================= SUSPICIOUS =================
-else if (verdict === "Suspicious") {
-  verdictText.innerText = "⚠️ Suspicious Message";
-  riskScoreEl.innerText = `${riskScore}% (Medium Risk)`;
-  statusBanner.classList.add("status-medium-risk");
-
-  if (safeIndicators.length === 0) {
-    reasonList.innerHTML = "<li>Minor risk patterns detected.</li>";
-  } else {
-    safeIndicators.forEach(ind => {
-      reasonList.innerHTML += `<li>${ind} detected</li>`;
-      indicatorList.innerHTML += `<span>⚠️ ${ind}</span>`;
-    });
+      indicators.forEach(ind => {
+        reasonList.innerHTML += `<li>${ind} detected</li>`;
+        indicatorList.innerHTML += `<span>🚨 ${ind}</span>`;
+      });
+    }
   }
-}
-
-// ================= SCAM =================
-else {
-  verdictText.innerText = "🚨 Scam Detected";
-  riskScoreEl.innerText = `${riskScore}% (High Risk)`;
-  statusBanner.classList.add("status-high-risk");
-
-  if (safeIndicators.length === 0) {
-    reasonList.innerHTML = "<li>Multiple high-risk patterns detected.</li>";
-  } else {
-    safeIndicators.forEach(ind => {
-      reasonList.innerHTML += `<li>${ind} detected</li>`;
-      indicatorList.innerHTML += `<span>🚨 ${ind}</span>`;
-    });
-  }
-}
-
 
   /* ===============================
-     RESULT ACTIONS
+     RESULT PAGE ACTIONS
   =============================== */
-  const analyzeAgainBtn = document.getElementById("secondary-btn");
-  const reportBtn = document.getElementById("primary-btn");
+
+  const analyzeAgainBtn = $("secondary-btn");
+  const reportBtn = $("primary-btn");
 
   if (analyzeAgainBtn) {
     analyzeAgainBtn.addEventListener("click", () => {

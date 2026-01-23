@@ -494,6 +494,16 @@ body {
     color: #0d47a1;
 }
 
+#signin-form,
+#signup-form {
+    background-color: #ffffff;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
+}
+
 #email-input,
 #password-input,
 #confirm-password-input {
@@ -522,4 +532,12 @@ body {
         background-color 0.3s ease,
         transform 0.2s ease,
         box-shadow 0.2s ease;
+}
+
+#signin-form button:hover,
+#signup-form button:hover {
+    background-color: #4fc3f7;
+    transform: scale(1.05);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+    color: #000000;
 }
