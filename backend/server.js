@@ -6,7 +6,9 @@ const analyzeRoutes = require("./routes/analyzeRoutes");
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "https://scamshield-ai.vercel.app"
+}));
 app.use(express.json());
 
 // Routes
