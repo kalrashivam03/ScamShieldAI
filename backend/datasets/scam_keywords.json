@@ -1,0 +1,69 @@
+{
+  "urgency": [
+    "urgent",
+    "immediately",
+    "act now",
+    "hurry",
+    "limited time",
+    "asap",
+    "respond quickly",
+    "within 24 hours",
+    "within 2 hours",
+    "deadline",
+    "expire soon",
+    "urgent action required"
+  ],
+
+  "phishing": [
+    "verify now",
+    "login now",
+    "click here",
+    "confirm account",
+    "update account",
+    "reset password"
+  ],
+
+  "financial": [
+    "free money",
+    "lottery",
+    "cash reward",
+    "win money",
+    "prize",
+    "investment return"
+  ],
+
+  "credentials": [
+    "otp",
+    "password",
+    "bank account",
+    "credit card",
+    "debit card",
+    "cvv",
+    "upi pin",
+    "verification code",
+    "security code",
+    "login credentials",
+    "account number",
+    "net banking",
+    "pan",
+    "bank details",
+    "kyc",
+    "aadhaar",
+    "identity verification"
+    ],
+
+  "threats": [
+    "account blocked",
+    "legal action",
+    "tax notice",
+    "suspended",
+    "police complaint"
+    ],
+    "government": [
+    "income tax department",
+    "pan card",
+    "aadhaar",
+    "kyc verification",
+    "government notice"
+]
+}

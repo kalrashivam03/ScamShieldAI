@@ -1,0 +1,27 @@
+{
+  "suspiciousLinks": [
+    "bit.ly",
+    "tinyurl",
+    "grabify",
+    "rebrand.ly",
+    "t.co"
+  ],
+  "fakeDomains": [
+    "secure-login",
+    "verify-account",
+    "free-reward",
+    "claim-prize"
+  ],
+  "phishing": [
+    "verify now",
+    "login now",
+    "click here",
+    "confirm account",
+    "update account",
+    "reset password",
+    "continue verification",
+    "verify your identity",
+    "restore access",
+    "unlock account"
+    ]
+}

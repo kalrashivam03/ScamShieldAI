@@ -12,10 +12,12 @@ exports.analyzeMessage = (req, res) => {
 
   const analysis = detectScam(message);
 
-  res.json({
+    res.json({
     success: true,
     verdict: analysis.verdict,
+    riskLevel: analysis.riskLevel,
     riskScore: analysis.riskScore,
-    indicators: analysis.indicators
+    indicators: analysis.indicators,
+    matchedCategories: analysis.matchedCategories
   });
 };
